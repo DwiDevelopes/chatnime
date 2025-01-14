@@ -228,14 +228,12 @@
     </style>
 
     <script>
-        const socket = io(); // Terhubung ke server Socket.io
-    
         // Memilih avatar yang akan digunakan
         function selectAvatar(avatarSrc) {
             document.getElementById('selected-avatar').src = avatarSrc;
             localStorage.setItem('selectedAvatar', avatarSrc);  // Menyimpan pilihan avatar
         }
-    
+
         // Menampilkan avatar yang dipilih (jika ada) ketika halaman dimuat
         window.onload = function() {
             var selectedAvatar = localStorage.getItem('selectedAvatar');
@@ -248,7 +246,7 @@
                 renderMessages(currentRoom); // Render pesan untuk room tertentu
             }
         };
-    
+
         // Fungsi untuk merender pesan dari localStorage
         function renderMessages(room) {
             var chatBox = document.getElementById('chat-box');
@@ -260,22 +258,22 @@
             roomMessages.forEach(function(msg) {
                 var newMessage = document.createElement('div');
                 newMessage.classList.add('message');
-    
+
                 var avatar = document.createElement('img');
                 avatar.src = msg.avatar;
                 newMessage.appendChild(avatar);
-    
+
                 var sender = document.createElement('span');
                 sender.classList.add('sender');
                 sender.textContent = msg.name + ": ";
-    
+
                 var messageContent = document.createElement('span');
                 messageContent.classList.add('content');
                 messageContent.textContent = msg.message;
-    
+
                 newMessage.appendChild(sender);
                 newMessage.appendChild(messageContent);
-    
+
                 // Menambahkan media (gambar/video) jika ada
                 if (msg.media) {
                     var mediaElement = document.createElement(msg.media.type === 'video' ? 'video' : 'img');
@@ -286,11 +284,11 @@
                     }
                     newMessage.appendChild(mediaElement);
                 }
-    
+
                 chatBox.appendChild(newMessage);
             });
         }
-    
+
         // Kirim pesan
         document.getElementById('send-btn').addEventListener('click', function() {
             var nameInput = document.getElementById('name');
@@ -301,7 +299,7 @@
             var avatar = document.getElementById('selected-avatar').src;
             var room = localStorage.getItem('currentRoom');
             var media = null;
-    
+
             // Menangani pengiriman gambar atau video
             if (fileInput.files.length > 0) {
                 var file = fileInput.files[0];
@@ -310,10 +308,10 @@
                     src: URL.createObjectURL(file)
                 };
             }
-    
+
             if (name !== "" && message !== "" && room) {
                 var messages = JSON.parse(localStorage.getItem('messages')) || [];
-    
+
                 // Menambah pesan baru dengan avatar yang dipilih dan room yang aktif
                 messages.push({
                     name: name,
@@ -322,30 +320,27 @@
                     room: room,
                     media: media
                 });
-    
+
                 // Menyimpan kembali pesan-pesan ke localStorage
                 localStorage.setItem('messages', JSON.stringify(messages));
-    
-                // Kirim pesan ke server menggunakan Socket.io
-                socket.emit('sendMessage', { name, message, avatar, room, media });
-    
+
                 // Render pesan terbaru
                 renderMessages(room);
-    
+
                 // Bersihkan input
                 nameInput.value = '';
                 messageInput.value = '';
                 fileInput.value = ''; // Reset file input
             }
         });
-    
+
         // Kirim pesan jika menekan Enter
         document.getElementById('message').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 document.getElementById('send-btn').click();
             }
         });
-    
+
         // Buat room baru
         document.getElementById('create-room-btn').addEventListener('click', function() {
             var roomName = document.getElementById('room-name').value.trim();
@@ -354,7 +349,7 @@
                 renderMessages(roomName); // Render pesan untuk room baru
             }
         });
-    
+
         // Bergabung ke room yang sudah ada
         document.getElementById('join-room-btn').addEventListener('click', function() {
             var roomName = document.getElementById('room-name').value.trim();
@@ -363,17 +358,15 @@
                 renderMessages(roomName); // Render pesan untuk room yang sudah ada
             }
         });
-    
         // Mendengarkan pesan yang diterima dari server
         socket.on('receiveMessage', function(msg) {
             var messages = JSON.parse(localStorage.getItem('messages')) || [];
             messages.push(msg);
             localStorage.setItem('messages', JSON.stringify(messages));
-    
+
             var room = localStorage.getItem('currentRoom');
             renderMessages(room);
         });
     </script>
-    
 </body>
 </html>
