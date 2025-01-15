@@ -6,24 +6,32 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-app.use(express.static('public')); // Menyajikan file HTML dan sumber daya lainnya
+app.use(express.static('public'));
 
-// Ketika ada koneksi baru dari client
+// Ketika klien terhubung
 io.on('connection', (socket) => {
-    console.log('A user connected');
+    console.log('User connected: ' + socket.id);
 
-    // Mendengarkan pesan dari client
-    socket.on('sendMessage', (msg) => {
-        io.emit('receiveMessage', msg); // Mengirim pesan ke semua pengguna yang terhubung
+    // Bergabung ke room tertentu
+    socket.on('joinRoom', (roomName) => {
+        socket.join(roomName);
+        console.log(socket.id + ' joined room: ' + roomName);
     });
 
-    // Ketika pengguna terputus
+    // Menerima pesan dan mengirimnya ke room yang sesuai
+    socket.on('sendMessageToRoom', (msg) => {
+        console.log('Message received: ', msg);
+        // Mengirim pesan ke semua klien dalam room tertentu
+        io.to(msg.room).emit('receiveMessageFromRoom', msg);
+    });
+
+    // Ketika klien disconnect
     socket.on('disconnect', () => {
-        console.log('A user disconnected');
+        console.log('User disconnected: ' + socket.id);
     });
 });
 
-// Jalankan server pada port 3000
+// Menjalankan server pada port 3000
 server.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
+    console.log('Server running on http://localhost:3000');
 });
