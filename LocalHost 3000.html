@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatting App</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1IaHbc+Rio2JaxPpLWkK0lSvnPimSlwm1/rQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="icon" type="image" href="ico.png">
+    <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="chat-container">
@@ -14,11 +21,18 @@
             <img src="cat.png" alt="Logo" />
         </div>
 
+        <!-- Room selection -->
+        <div class="room-selection">
+            <h3>Pilih Room:</h3>
+            <input type="text" id="room-name" placeholder="Masukkan nama room..." />
+            <button id="create-room-btn"><i class="fas fa-search"></i></button>
+        </div>
+
         <div class="chat-box" id="chat-box"></div>
 
         <!-- Form input dengan pilihan avatar -->
         <div class="avatar-selection">
-            <h3 ><img src = "ava.png" alt = "Logo" class = "logo-avatar" width="200px" height="60px"></h3>
+            <h3><img src="ava.png" alt="Logo" class="logo-avatar" width="200px" height="60px"></h3>
             <div class="avatar-options">
                 <img src="1.jpg" alt="Avatar 1" class="avatar-option" onclick="selectAvatar('1.jpg')" />
                 <img src="2.jpg" alt="Avatar 2" class="avatar-option" onclick="selectAvatar('2.jpg')" />
@@ -29,13 +43,20 @@
                 <img src="7.jpg" alt="Avatar 7" class="avatar-option" onclick="selectAvatar('7.jpg')" />
             </div>
         </div>
-        <!-- Room selection -->
-        <div class="room-selection">
-            <h3>Pilih Room:</h3>
-            <input type="text" id="room-name" placeholder="Masukkan nama room..." />
-            <button id="create-room-btn">Buat Room</button>
-            <button id="join-room-btn">Bergabung ke Room</button>
+                <!-- Bagian untuk memilih stiker -->
+        <div class="sticker-selection">
+            <h3 style="color: white;">Pilih Stiker:</h3>
+            <div class="sticker-options">
+                <img src="stiker/1.jpg" alt="Stiker 1" class="sticker-option" onclick="selectSticker('stiker/1.jpg')" />
+                <img src="stiker/2.jpg" alt="Stiker 2" class="sticker-option" onclick="selectSticker('stiker/2.jpg')" />
+                <img src="stiker/3.jpg" alt="Stiker 3" class="sticker-option" onclick="selectSticker('stiker/3.jpg')" />
+                <img src="stiker/4.jpg" alt="Stiker 4" class="sticker-option" onclick="selectSticker('stiker/4.jpg')" />
+                <img src="stiker/5.jpg" alt="Stiker 1" class="sticker-option" onclick="selectSticker('stiker/5.jpg')" />
+                <img src="stiker/6.jpg" alt="Stiker 2" class="sticker-option" onclick="selectSticker('stiker/6.jpg')" />
+                <img src="stiker/7.jpg" alt="Stiker 3" class="sticker-option" onclick="selectSticker('stiker/7.jpg')" />
+            </div>
         </div>
+
         <div class="input-container">
             <!-- Menampilkan avatar yang dipilih -->
             <div class="avatar">
@@ -43,10 +64,79 @@
             </div>
             <input type="text" id="name" placeholder="Masukkan nama..." />
             <input type="text" id="message" placeholder="Tulis pesan..." />
+            <input type="file" id="file-input" accept="image/*,video/*" />
             <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
+    <script>
+        const socket = io(); // Koneksi ke server Socket.io
 
+        // Fungsi untuk bergabung ke room yang dipilih
+        document.getElementById('join-room-btn').addEventListener('click', function() {
+            const roomName = document.getElementById('room-name').value.trim();
+            if (roomName !== "") {
+                // Bergabung ke room di server
+                socket.emit('joinRoom', roomName);
+
+                // Menyimpan room yang aktif
+                localStorage.setItem('currentRoom', roomName);
+
+                // Clear chat box
+                document.getElementById('chat-box').innerHTML = '';
+            }
+        });
+
+        // Fungsi untuk mengirim pesan ke room yang aktif
+        document.getElementById('send-btn').addEventListener('click', function() {
+            const nameInput = document.getElementById('name');
+            const messageInput = document.getElementById('message');
+            const name = nameInput.value.trim();
+            const message = messageInput.value.trim();
+            const room = localStorage.getItem('currentRoom'); // Room yang aktif
+
+            if (name !== "" && message !== "" && room) {
+                const msg = { name, message, room, timestamp: new Date().toLocaleTimeString() };
+
+                // Mengirim pesan ke room yang aktif
+                socket.emit('sendMessageToRoom', msg);
+
+                // Bersihkan input
+                nameInput.value = '';
+                messageInput.value = '';
+            }
+        });
+
+        // Menerima pesan dari server dan menampilkannya
+        socket.on('receiveMessageFromRoom', function(msg) {
+            const chatBox = document.getElementById('chat-box');
+            const newMessage = document.createElement('div');
+            newMessage.classList.add('message');
+            newMessage.innerHTML = `
+                <strong>${msg.name}:</strong> ${msg.message} 
+                <span class="timestamp">[${msg.timestamp}]</span>
+                <button class="copy-btn" onclick="copyMessage('${msg.message}')">Copy</button>
+            `;
+            chatBox.appendChild(newMessage);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll ke pesan terbaru
+        });
+
+        // Fungsi untuk menyalin pesan ke clipboard
+        function copyMessage(message) {
+            const textArea = document.createElement('textarea');
+            textArea.value = message;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('Pesan disalin ke clipboard!');
+        }
+    </script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" integrity="sha384-r6e/h6/e/u9s/8/9/v/q/d/z/S9/a/w/i/t/o/r/k/n" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1IaHbc+Rio2JaxPpLWkK0lSvnPimSlwm1/rQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="server.py"></script>
+    <script src="user.py"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,7 +145,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #54545a;
+            background-image: url("bg.jpg");
         }
 
         .chat-container {
@@ -72,7 +162,7 @@
         }
 
         .logo img {
-            width: 100px; /* Ukuran logo */
+            width: 100px;
             height: auto;
         }
 
@@ -104,8 +194,38 @@
             border: 2px solid transparent;
         }
 
-        .avatar-option:hover {
-            border: 2px solid #007BFF;
+        .room-selection {
+            margin-bottom: 15px;
+        }
+
+        .create-room-btn {
+            width: 80px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .create-room-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .join-room-btn {
+            width: 80px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .join-room-btn:hover {
+            background-color: #0056b3;
         }
 
         .input-container {
@@ -128,7 +248,7 @@
         }
 
         input {
-            width: calc(100% - 100px);
+            width: calc(100% - 150px);
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ddd;
@@ -175,7 +295,48 @@
             margin-right: 10px;
         }
 
+        .media {
+            max-width: 300px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+
+        .media img, .media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .time-sent {
+            font-size: 0.8em;
+            color: #000000;
+            margin-left: 10px;
+        }
+        .sticker-selection {
+            margin-bottom: 15px;
+        }
+        
+        .sticker-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .sticker-option {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        /* Gaya untuk stiker dalam chat */
+        .media.sticker {
+            width: 100px;  /* Ukuran kotak stiker */
+            height: 100px; /* Ukuran kotak stiker */
+            object-fit: cover; /* Menghindari pemotongan gambar */
+            border-radius: 10px; /* Memberikan sudut yang sedikit melengkung */
+        }
+
+        
     </style>
+
     <script>
         // Memilih avatar yang akan digunakan
         function selectAvatar(avatarSrc) {
@@ -189,67 +350,189 @@
             if (selectedAvatar) {
                 document.getElementById('selected-avatar').src = selectedAvatar;
             }
-            renderMessages(); // Render pesan yang ada
+            var currentRoom = localStorage.getItem('currentRoom');
+            if (currentRoom) {
+                document.getElementById('room-name').value = currentRoom;
+                renderMessages(currentRoom); // Render pesan untuk room tertentu
+            }
         };
 
-        // Fungsi untuk merender pesan dari localStorage
-        function renderMessages() {
-            var chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML = ''; // Clear chat box
-            var messages = JSON.parse(localStorage.getItem('messages')) || [];
-            messages.forEach(function(msg) {
-                var newMessage = document.createElement('div');
-                newMessage.classList.add('message');
+ // Fungsi untuk merender pesan dari localStorage
+function renderMessages(room) {
+    var chatBox = document.getElementById('chat-box');
+    chatBox.innerHTML = ''; // Clear chat box
+    var messages = JSON.parse(localStorage.getItem('messages')) || [];
+    var roomMessages = messages.filter(function(msg) {
+        return msg.room === room;
+    });
+    roomMessages.forEach(function(msg) {
+        var newMessage = document.createElement('div');
+        newMessage.classList.add('message');
 
-                var avatar = document.createElement('img');
-                avatar.src = msg.avatar;
-                newMessage.appendChild(avatar);
+        var avatar = document.createElement('img');
+        avatar.src = msg.avatar;
+        newMessage.appendChild(avatar);
 
-                var sender = document.createElement('span');
-                sender.classList.add('sender');
-                sender.textContent = msg.name + ": ";
+        var sender = document.createElement('span');
+        sender.classList.add('sender');
+        sender.textContent = msg.name + ": ";
 
-                var messageContent = document.createElement('span');
-                messageContent.classList.add('content');
-                messageContent.textContent = msg.message;
+        var messageContent = document.createElement('span');
+        messageContent.classList.add('content');
+        messageContent.textContent = msg.message;
 
-                newMessage.appendChild(sender);
-                newMessage.appendChild(messageContent);
-                chatBox.appendChild(newMessage);
-            });
+        newMessage.appendChild(sender);
+        newMessage.appendChild(messageContent);
+
+        // Menambahkan media (gambar/video/stiker) jika ada
+        if (msg.media) {
+            var mediaElement = document.createElement(msg.media.type === 'video' ? 'video' : 'img');
+            mediaElement.classList.add('media');
+
+            // Jika media adalah stiker, tambahkan kelas 'sticker'
+            if (msg.media.type === 'image' && msg.media.src.includes('sticker')) {
+                mediaElement.classList.add('sticker');
+            }
+
+            mediaElement.src = msg.media.src;
+            if (msg.media.type === 'video') {
+                mediaElement.controls = true;
+            }
+            newMessage.appendChild(mediaElement);
         }
 
-        // Kirim pesan
-        document.getElementById('send-btn').addEventListener('click', function() {
-            var nameInput = document.getElementById('name');
-            var messageInput = document.getElementById('message');
-            var name = nameInput.value.trim();
-            var message = messageInput.value.trim();
-            var avatar = document.getElementById('selected-avatar').src;
+        // Menambahkan waktu pengiriman
+        var timeSent = document.createElement('span');
+        timeSent.classList.add('time-sent');
+        timeSent.textContent = new Date(msg.timestamp).toLocaleTimeString(); // Format waktu
+        newMessage.appendChild(timeSent);
 
-            if (name !== "" && message !== "") {
-                var messages = JSON.parse(localStorage.getItem('messages')) || [];
+        chatBox.appendChild(newMessage);
+    });
+}
 
-                // Menambah pesan baru dengan avatar yang dipilih
-                messages.push({ name: name, message: message, avatar: avatar });
 
-                // Menyimpan kembali pesan-pesan ke localStorage
-                localStorage.setItem('messages', JSON.stringify(messages));
+                
+                // Menampilkan waktu pesan di chat
+                function displayTime(timestamp) {
+                    var date = new Date(timestamp);
+                    var hours = date.getHours();
+                    var minutes = date.getMinutes();
+                    var seconds = date.getSeconds();
+                    var formattedTime = hours + ":" + minutes + ":" + seconds;
+                    return formattedTime;
+                }
+                
 
-                // Render pesan terbaru
-                renderMessages();
+           
+            // Menyimpan stiker yang dipilih
+            let selectedSticker = null;
 
-                // Bersihkan input
-                nameInput.value = '';
-                messageInput.value = '';
+            // Fungsi untuk memilih stiker
+            function selectSticker(stickerSrc) {
+                selectedSticker = stickerSrc;  // Menyimpan stiker yang dipilih
+                document.getElementById('selected-avatar').src = stickerSrc;  // Menampilkan stiker yang dipilih
             }
+
+// Sound to play when sending a message
+const sendMessageSound = new Audio('n.mp3'); // replace with your own sound file
+
+// Add the play sound function
+function playSendMessageSound() {
+    sendMessageSound.play();
+}
+// Modifikasi event listener untuk mengirim pesan
+document.getElementById('send-btn').addEventListener('click', function() {
+    var nameInput = document.getElementById('name');
+    var messageInput = document.getElementById('message');
+    var fileInput = document.getElementById('file-input');
+    var name = nameInput.value.trim();
+    var message = messageInput.value.trim();
+    var avatar = document.getElementById('selected-avatar').src;
+    var room = localStorage.getItem('currentRoom');
+    var media = null;
+
+    // Jika stiker dipilih, gunakan stiker sebagai media
+    if (selectedSticker) {
+        media = {
+            type: 'image',
+            src: selectedSticker
+        };
+    } else if (fileInput.files.length > 0) {
+        var file = fileInput.files[0];
+        media = {
+            type: file.type.startsWith('video') ? 'video' : 'image',
+            src: URL.createObjectURL(file)
+        };
+    }
+
+    if (name !== "" && message !== "" && room) {
+        var messages = JSON.parse(localStorage.getItem('messages')) || [];
+
+        // Menambah pesan baru dengan avatar yang dipilih dan room yang aktif
+        messages.push({
+            name: name,
+            message: message,
+            avatar: avatar,
+            room: room,
+            media: media,
+            timestamp: Date.now() // Menambahkan timestamp pesan
         });
+
+        // Menyimpan kembali pesan-pesan ke localStorage
+        localStorage.setItem('messages', JSON.stringify(messages));
+
+        // Render pesan terbaru
+        renderMessages(room);
+
+        // Play the sound when sending a message
+        playSendMessageSound();
+
+        // Bersihkan input
+        nameInput.value = '';
+        messageInput.value = '';
+        fileInput.value = ''; // Reset file input
+        selectedSticker = null;  // Reset stiker setelah pengiriman
+    }
+});
+
+
 
         // Kirim pesan jika menekan Enter
         document.getElementById('message').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 document.getElementById('send-btn').click();
             }
+        });
+
+        // Buat room baru
+        document.getElementById('create-room-btn').addEventListener('click', function() {
+            var roomName = document.getElementById('room-name').value.trim();
+            if (roomName !== "") {
+                localStorage.setItem('currentRoom', roomName);
+                renderMessages(roomName); // Render pesan untuk room baru
+            }
+        });
+
+        // Bergabung ke room yang sudah ada
+        document.getElementById('join-room-btn').addEventListener('click', function() {
+            var roomName = document.getElementById('room-name').value.trim();
+            if (roomName !== "") {
+                localStorage.setItem('currentRoom', roomName);
+                renderMessages(roomName); // Render pesan untuk room yang sudah ada
+            }
+        });
+        // Mendengarkan pesan yang diterima dari server
+        socket.on('receiveMessage', function(msg) {
+            var messages = JSON.parse(localStorage.getItem('messages')) || [];
+            messages.push(msg);
+            localStorage.setItem('messages', JSON.stringify(messages));
+
+            var room = localStorage.getItem('currentRoom');
+            renderMessages(room);
+            // Putar suara ketika pesan baru diterima
+            var audio = new Audio('n.mp3');  // Sesuaikan dengan path file audio
+            audio.play();
         });
     </script>
 </body>
