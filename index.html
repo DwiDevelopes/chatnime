@@ -11,7 +11,8 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1IaHbc+Rio2JaxPpLWkK0lSvnPimSlwm1/rQ=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
+    <link rel="icon" type="image" href="ico.png">
+    <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="chat-container">
@@ -110,11 +111,32 @@
             const chatBox = document.getElementById('chat-box');
             const newMessage = document.createElement('div');
             newMessage.classList.add('message');
-            newMessage.innerHTML = `<strong>${msg.name}:</strong> ${msg.message} <span class="timestamp">[${msg.timestamp}]</span>`;
+            newMessage.innerHTML = `
+                <strong>${msg.name}:</strong> ${msg.message} 
+                <span class="timestamp">[${msg.timestamp}]</span>
+                <button class="copy-btn" onclick="copyMessage('${msg.message}')">Copy</button>
+            `;
             chatBox.appendChild(newMessage);
             chatBox.scrollTop = chatBox.scrollHeight; // Scroll ke pesan terbaru
         });
+
+        // Fungsi untuk menyalin pesan ke clipboard
+        function copyMessage(message) {
+            const textArea = document.createElement('textarea');
+            textArea.value = message;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('Pesan disalin ke clipboard!');
+        }
     </script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" integrity="sha384-r6e/h6/e/u9s/8/9/v/q/d/z/S9/a/w/i/t/o/r/k/n" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1IaHbc+Rio2JaxPpLWkK0lSvnPimSlwm1/rQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="server.py"></script>
+    <script src="user.py"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -123,7 +145,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #54545a;
+            background-image: url("bg.jpg");
         }
 
         .chat-container {
@@ -412,7 +434,13 @@ function renderMessages(room) {
                 document.getElementById('selected-avatar').src = stickerSrc;  // Menampilkan stiker yang dipilih
             }
 
+// Sound to play when sending a message
+const sendMessageSound = new Audio('n.mp3'); // replace with your own sound file
 
+// Add the play sound function
+function playSendMessageSound() {
+    sendMessageSound.play();
+}
 // Modifikasi event listener untuk mengirim pesan
 document.getElementById('send-btn').addEventListener('click', function() {
     var nameInput = document.getElementById('name');
@@ -457,6 +485,9 @@ document.getElementById('send-btn').addEventListener('click', function() {
         // Render pesan terbaru
         renderMessages(room);
 
+        // Play the sound when sending a message
+        playSendMessageSound();
+
         // Bersihkan input
         nameInput.value = '';
         messageInput.value = '';
@@ -499,6 +530,9 @@ document.getElementById('send-btn').addEventListener('click', function() {
 
             var room = localStorage.getItem('currentRoom');
             renderMessages(room);
+            // Putar suara ketika pesan baru diterima
+            var audio = new Audio('n.mp3');  // Sesuaikan dengan path file audio
+            audio.play();
         });
     </script>
 </body>

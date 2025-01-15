@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatting App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Logo di atas kotak chat -->
+        <div class="logo">
+            <img src="cat.png" alt="Logo" />
+        </div>
+
+        <div class="chat-box" id="chat-box"></div>
+
+        <!-- Form input dengan pilihan avatar -->
+        <div class="avatar-selection">
+            <h3 ><img src = "ava.png" alt = "Logo" class = "logo-avatar" width="200px" height="60px"></h3>
+            <div class="avatar-options">
+                <img src="1.jpg" alt="Avatar 1" class="avatar-option" onclick="selectAvatar('1.jpg')" />
+                <img src="2.jpg" alt="Avatar 2" class="avatar-option" onclick="selectAvatar('2.jpg')" />
+                <img src="3.jpg" alt="Avatar 3" class="avatar-option" onclick="selectAvatar('3.jpg')" />
+                <img src="4.jpg" alt="Avatar 4" class="avatar-option" onclick="selectAvatar('4.jpg')" />
+                <img src="5.jpg" alt="Avatar 5" class="avatar-option" onclick="selectAvatar('5.jpg')" />
+                <img src="6.jpg" alt="Avatar 6" class="avatar-option" onclick="selectAvatar('6.jpg')" />
+                <img src="7.jpg" alt="Avatar 7" class="avatar-option" onclick="selectAvatar('7.jpg')" />
+            </div>
+        </div>
+        <!-- Room selection -->
+        <div class="room-selection">
+            <h3>Pilih Room:</h3>
+            <input type="text" id="room-name" placeholder="Masukkan nama room..." />
+            <button id="create-room-btn">Buat Room</button>
+            <button id="join-room-btn">Bergabung ke Room</button>
+        </div>
+        <div class="input-container">
+            <!-- Menampilkan avatar yang dipilih -->
+            <div class="avatar">
+                <img id="selected-avatar" src="1.png" alt="Avatar" />
+            </div>
+            <input type="text" id="name" placeholder="Masukkan nama..." />
+            <input type="text" id="message" placeholder="Tulis pesan..." />
+            <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #54545a;
+        }
+
+        .chat-container {
+            width: 400px;
+            background-color: #000000;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 100px; /* Ukuran logo */
+            height: auto;
+        }
+
+        .chat-box {
+            height: 300px;
+            overflow-y: scroll;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fafafa;
+        }
+
+        .avatar-selection {
+            margin-bottom: 15px;
+        }
+
+        .avatar-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .avatar-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .avatar-option:hover {
+            border: 2px solid #007BFF;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        input {
+            width: calc(100% - 100px);
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 80px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: #e9e9e9;
+            border-radius: 4px;
+        }
+
+        .message .sender {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .message .content {
+            flex: 1;
+        }
+
+        .message img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+    </style>
+    <script>
+        // Memilih avatar yang akan digunakan
+        function selectAvatar(avatarSrc) {
+            document.getElementById('selected-avatar').src = avatarSrc;
+            localStorage.setItem('selectedAvatar', avatarSrc);  // Menyimpan pilihan avatar
+        }
+
+        // Menampilkan avatar yang dipilih (jika ada) ketika halaman dimuat
+        window.onload = function() {
+            var selectedAvatar = localStorage.getItem('selectedAvatar');
+            if (selectedAvatar) {
+                document.getElementById('selected-avatar').src = selectedAvatar;
+            }
+            renderMessages(); // Render pesan yang ada
+        };
+
+        // Fungsi untuk merender pesan dari localStorage
+        function renderMessages() {
+            var chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML = ''; // Clear chat box
+            var messages = JSON.parse(localStorage.getItem('messages')) || [];
+            messages.forEach(function(msg) {
+                var newMessage = document.createElement('div');
+                newMessage.classList.add('message');
+
+                var avatar = document.createElement('img');
+                avatar.src = msg.avatar;
+                newMessage.appendChild(avatar);
+
+                var sender = document.createElement('span');
+                sender.classList.add('sender');
+                sender.textContent = msg.name + ": ";
+
+                var messageContent = document.createElement('span');
+                messageContent.classList.add('content');
+                messageContent.textContent = msg.message;
+
+                newMessage.appendChild(sender);
+                newMessage.appendChild(messageContent);
+                chatBox.appendChild(newMessage);
+            });
+        }
+
+        // Kirim pesan
+        document.getElementById('send-btn').addEventListener('click', function() {
+            var nameInput = document.getElementById('name');
+            var messageInput = document.getElementById('message');
+            var name = nameInput.value.trim();
+            var message = messageInput.value.trim();
+            var avatar = document.getElementById('selected-avatar').src;
+
+            if (name !== "" && message !== "") {
+                var messages = JSON.parse(localStorage.getItem('messages')) || [];
+
+                // Menambah pesan baru dengan avatar yang dipilih
+                messages.push({ name: name, message: message, avatar: avatar });
+
+                // Menyimpan kembali pesan-pesan ke localStorage
+                localStorage.setItem('messages', JSON.stringify(messages));
+
+                // Render pesan terbaru
+                renderMessages();
+
+                // Bersihkan input
+                nameInput.value = '';
+                messageInput.value = '';
+            }
+        });
+
+        // Kirim pesan jika menekan Enter
+        document.getElementById('message').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                document.getElementById('send-btn').click();
+            }
+        });
+    </script>
+</body>
+</html>
