@@ -1,0 +1,230 @@
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url("bg.jpg");
+        }
+
+        .chat-container {
+            width: 400px;
+            background-color: #000000;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 100px;
+            height: auto;
+        }
+
+        .chat-box {
+            height: 300px;
+            overflow-y: scroll;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fafafa;
+        }
+
+        .avatar-selection {
+            margin-bottom: 1px;
+        }
+        
+
+        .avatar-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .avatar-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .room-selection {
+            margin-bottom: 15px;
+        }
+
+        .create-room-btn {
+            width: 80px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .create-room-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .join-room-btn {
+            width: 80px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .join-room-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        input {
+            width: calc(100% - 150px);
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 80px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0f831c;
+        }
+
+        .message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: #e9e9e9;
+            border-radius: 4px;
+            position: relative;
+        }
+        
+        .message .sender {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .message .content {
+            flex: 1;
+        }
+        
+        .message img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .message-checkbox {
+            position: absolute;
+            right: 231px;
+            top: 89%;
+            transform: translateY(-80%); /* Vertikal rata tengah */
+            cursor: pointer;
+        }
+        
+        .time-sent {
+            font-size: 0.8em;
+            color: #000000;
+            margin-left: 10px;
+        }
+        
+
+        .media {
+            max-width: 300px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+
+        .media img, .media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .time-sent {
+            font-size: 0.8em;
+            color: #000000;
+            margin-left: 10px;
+        }
+        .sticker-selection {
+            margin-bottom: 15px;
+        }
+        
+        .sticker-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .sticker-option {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        /* Gaya untuk stiker dalam chat */
+        .media.sticker {
+            width: 100px;  /* Ukuran kotak stiker */
+            height: 100px; /* Ukuran kotak stiker */
+            object-fit: cover; /* Menghindari pemotongan gambar */
+            border-radius: 10px; /* Memberikan sudut yang sedikit melengkung */
+        }
+
+        /* Menambahkan gaya untuk tombol trash */
+        .trash-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: red;
+            font-size: 20px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .trash-btn:hover {
+            color: darkred;
+        }
+
+        
