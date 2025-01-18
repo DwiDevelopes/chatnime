@@ -13,7 +13,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link rel="icon" type="image" href="ico.png">
     <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
-
+    <script src="app.js"></script>
+    <script src="service-worker.js"></script>
+    <script src="script.js"></script>
+    <script src="user.js"></script>
+    <script src="server.js"></script>
+    <script src="index.js"></script>
 </head>
 <body>
     <div class="chat-container">
@@ -174,17 +179,6 @@ window.addEventListener('click', function(event) {
                 document.getElementById('chat-box').innerHTML = '';
             }
         });
-
-                // Mengambil nama room dari query string di URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const roomName = urlParams.get('room');
-
-        if (roomName) {
-            socket.emit('joinRoom', roomName);
-            document.getElementById('room-name').value = roomName;
-            renderMessages(roomName);
-        }
-
 
         // Fungsi untuk mengirim pesan ke room yang aktif
         document.getElementById('send-btn').addEventListener('click', function() {

@@ -23,11 +23,7 @@ app.get('/chat', (req, res) => {
 const server = http.createServer(app);
 
 // Initialize Socket.io with the server
-const io = socketIo(server, {
-  // Add WebSocket support, forceNew connection, and proper transport method
-  transports: ['websocket'],
-  allowEIO3: true,  // Enable compatibility with older versions of Socket.io if needed
-});
+const io = socketIo(server);
 
 // Socket.io connections and events
 io.on('connection', (socket) => {
