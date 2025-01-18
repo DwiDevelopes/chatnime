@@ -212,19 +212,97 @@
             border-radius: 10px; /* Memberikan sudut yang sedikit melengkung */
         }
 
-        /* Menambahkan gaya untuk tombol trash */
-        .trash-btn {
-            background: none;
+        .clear-chat-btn {
+            background-color: #e14c58; /* Warna merah */
+            color: white;
+            padding: 10px;
+            border: 1px solid #ddd;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
-            color: red;
-            font-size: 20px;
             margin-left: 10px;
-            vertical-align: middle;
         }
-
-        .trash-btn:hover {
-            color: darkred;
-        }
-
         
+        .clear-chat-btn:hover {
+            background-color: #c0392b;
+        }
+
+                    /* Style for the pop-up button */
+        .popup-btn {
+            position: absolute;
+            bottom: 640px;
+            right: 210px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: 1px solid #ddd;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .popup-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Style for the pop-up modal */
+        .popup-modal {
+            display: none;  /* Hidden by default */
+            position: fixed;
+            z-index: 1;  /* Stay on top */
+            left: 0;
+            top: 0;
+            width: 100%;  /* Full width */
+            height: 100%;  /* Full height */
+            background-color: rgba(0, 0, 0, 0.5);  /* Semi-transparent black */
+        }
+
+        /* Style the content of the pop-up modal */
+        .popup-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            position: relative;
+        }
+
+        /* Close button style */
+        .close-btn {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 5px;
+            right: 10px;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #close-modal-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #close-modal-btn:hover {
+            background-color: #218838;
+        }
+
+        iframe {
+            border-radius: 10px;
+        }
+
+
+
+                

@@ -21,6 +21,50 @@
         <div class="logo">
             <img src="cat.png" alt="Logo" />
         </div>
+
+        <!-- Pop-up Button -->
+<button id="popup-btn" class="popup-btn"><i class="far fa-file-image"></i></button>
+
+<!-- Pop-up Modal with Iframe -->
+<div id="popup-modal" class="popup-modal">
+    <div class="popup-content">
+        <span id="close-btn" class="close-btn">&times;</span>
+        <h3>Connect Internet <i class="fab fa-wolf-pack-battalion"></i></h3>
+        <iframe id="iframe-content" src="https://dwidevelopes.github.io/holodayimage/" width="100%" height="400px" frameborder="0"></iframe>
+        <button id="close-modal-btn">Close</button>
+    </div>
+</div>
+<script>
+    // Get references to elements
+const popupBtn = document.getElementById('popup-btn');
+const popupModal = document.getElementById('popup-modal');
+const closeBtn = document.getElementById('close-btn');
+const closeModalBtn = document.getElementById('close-modal-btn');
+const iframe = document.getElementById('iframe-content');
+
+// Function to open the modal
+popupBtn.addEventListener('click', function() {
+    popupModal.style.display = 'block';
+});
+
+// Function to close the modal when the 'X' button is clicked
+closeBtn.addEventListener('click', function() {
+    popupModal.style.display = 'none';
+});
+
+// Function to close the modal when the 'Close' button is clicked
+closeModalBtn.addEventListener('click', function() {
+    popupModal.style.display = 'none';
+});
+
+// Close the modal if the user clicks outside of the modal content
+window.addEventListener('click', function(event) {
+    if (event.target === popupModal) {
+        popupModal.style.display = 'none';
+    }
+});
+
+</script>
          <!-- Tambahkan musik latar belakang -->
     <audio id="background-music" autoplay loop>
         <source src="no.mp3" type="audio/mp3">
@@ -51,6 +95,7 @@
             <h3>Pilih Room:</h3>
             <input type="text" id="room-name" placeholder="Masukkan nama room..." />
             <button id="create-room-btn"><i class="fas fa-search"></i></button>
+            <button id="join-room-btn"><i class="fas fa-sign-in-alt"></i></button>
         </div>
 
         <div class="chat-box" id="chat-box"></div>
@@ -90,8 +135,27 @@
             <input type="text" id="name" placeholder="nama" />
             <input type="text" id="message" placeholder="Tulis pesan..." />
             <input type="file" id="file-input" accept="image/*,video/*" />
+            
+            <!-- Tombol Kirim Pesan -->
             <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+            
+            <!-- Tombol Hapus Semua Chat -->
+            <button id="clear-chat-btn" class="clear-chat-btn"><i class="fas fa-trash-restore-alt"></i></button>
         </div>
+        <script>
+            // Menambahkan event listener untuk tombol "Hapus Semua Chat"
+        document.getElementById('clear-chat-btn').addEventListener('click', function() {
+            // Menghapus pesan dari localStorage
+            localStorage.removeItem('messages');
+            
+            // Menghapus pesan yang ada di tampilan chat
+            document.getElementById('chat-box').innerHTML = '';
+            
+            alert('Semua Pesan Anda Telah Dihapus!');
+        });
+
+        </script>
+        
     </div>
     <script>
         const socket = io(); // Koneksi ke server Socket.io
@@ -110,6 +174,17 @@
                 document.getElementById('chat-box').innerHTML = '';
             }
         });
+
+        // Mengambil nama room dari query string di URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomName = urlParams.get('room');
+
+        if (roomName) {
+            socket.emit('joinRoom', roomName);
+            document.getElementById('room-name').value = roomName;
+            renderMessages(roomName);
+        }
+
 
         // Fungsi untuk mengirim pesan ke room yang aktif
         document.getElementById('send-btn').addEventListener('click', function() {
@@ -383,7 +458,6 @@ document.getElementById('send-btn').addEventListener('click', function() {
         newMessage.appendChild(checkbox);
 
         chatBox.appendChild(newMessage);
-        
     });
 }
 

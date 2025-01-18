@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Boxicons CDN Link -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+  <body>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+</script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+        swal({
+  title: "Information?",
+  text: "📸 📸 This app was created by Dwi Bakti Dev who is still starting to develop this app. This app is still a demo for use but I am sure that this app is good and ready to be used among people who like beautiful photos 📸 📸",
+  icon: "info",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+    swal("This app is ready to use for old and new versions 📱📱", {
+      title:"Information?",
+      icon: "info",
+    });
+  } else {
+    swal("apps ini bisa digunakan di kalangan device mana pun jadi aman support ios dan android 🖥💻📱");
+  }
+});
+    </script>
+
+    <div class="lightbox">
+      <div class="wrapper">
+        <header>
+          <div class="photographer">
+<i class="fa-brands fa-wolf-pack-battalion"></i>
+            <span></span>
+          </div>
+          <div class="buttons">
+            <i class="uil uil-import"></i>
+            <i class="close-icon uil uil-times"></i>
+          </div>
+        </header>
+        <div class="preview-img">
+          <div class="img"><img src="" alt="preview-img"></div>
+        </div>
+      </div>
+    </div>
+    <section class="search">
+      <img src="trend.png" alt="search-img">
+      <div class="content">
+        <p>Search and download any images with HolodayGalery</p>
+        <div class="search-box">
+<i class="fa-brands fa-searchengin"></i>
+          <input type="text" placeholder="Search images">
+        </div>
+      </div>
+    </section>
+    <section class="gallery">
+      <ul class="images"></ul>
+      <button class="load-more">Load More</button>
+    </section>
+<style>
+  /* Import Google font - Poppins */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body{
+  background-image:url('4.gif');
+}
+.search {
+  height: 40vh;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+.search::before, .search img, .lightbox {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.search::before {
+  content: "";
+  z-index: 1;
+  background: rgba(0,0,0,0.25);
+}
+.search img {
+  object-fit: cover;
+}
+.search .content {
+  z-index: 2;
+  color: white;
+  padding: 0 13px;
+  text-align: center;
+  position: relative;
+}
+.search h1 {
+  font-size: 2.65rem;
+  font-weight: 600;
+}
+.search p {
+  margin-top: 8px;
+  font-size: 1.5rem;
+}
+.search .search-box {
+  height: 55px;
+  margin: 45px 0;
+  position: relative;
+}
+.search-box i {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  cursor: default;
+  color: white;
+  font-size: 1.4rem;
+  transform: translateY(-50%);
+}
+.search-box input {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border: none;
+  font-size: 1.1rem;
+  padding-left: 55px;
+  background:black;
+  border-radius: 15px;
+  color:white;
+  box-shadow: 2px 2px 2px 4px white;
+}
+.search-box input::placeholder {
+  color: white;
+}
+.search-box input:focus::placeholder {
+  color: white;
+}
+.gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.gallery .images {
+  gap: 15px;
+  max-width: 95%;
+  margin-top: 40px;
+  columns: 5 340px;
+  list-style: none;
+}
+.gallery .images .card {
+  display: flex;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 14px;
+  border-radius: 15px;
+}
+.gallery .images img {
+  width: 100%;
+  z-index: 2;
+  position: relative;
+}
+.images .details {
+  position: absolute;
+  z-index: 4;
+  width: 100%;
+  bottom: -100px;
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  justify-content: space-between;
+  transition: bottom 0.1s ease;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+}
+.images li:hover .details {
+  bottom: 0;
+}
+.photographer {
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+.photographer i {
+  font-size: 1.4rem;
+  margin-right: 10px;
+}
+.photographer span {
+  font-size: 1.05rem;
+}
+button, i {
+  outline: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 15px;
+  transition: 0.2s ease;
+}
+.details button {
+  background: #fff;
+  font-size: 1.1rem;
+  padding: 3px 8px;
+}
+.details .download-btn:hover {
+  background: white;
+}
+.gallery .load-more {
+  color: #fff;
+  background: #8A6CFF;
+  margin: 50px 0;
+  font-size: 1.2rem;
+  padding: 12px 27px;
+}
+.gallery .load-more.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+.gallery .load-more:hover {
+  background: pink;
+}
+
+.lightbox {
+  z-index: 5;
+  position: fixed;
+  visibility: hidden;
+  background-image: url('4.gif');
+}
+.lightbox.show {
+  visibility: visible;
+}
+.lightbox .wrapper {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  padding: 20px;
+  max-width: 850px;
+  background: black;
+  border-radius: 15px;
+  box-shadow: 2px 2px 2px white;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.9);
+  transition: transform 0.1s ease;
+}
+.lightbox.show .wrapper {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+.wrapper header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+header .photographer {
+  color: white;
+}
+header .photographer i {
+  font-size: 1.7rem;
+  cursor: auto;
+}
+header .photographer span {
+  font-size: 1.2rem;
+}
+header .buttons i {
+  height: 40px;
+  width: 40px;
+  display: inline-block;
+  color: #fff;
+  font-size: 1.2rem;
+  line-height: 40px;
+  text-align: center;
+  background: #8A6CFF;
+  border-radius: 15px;
+  transition: 0.2s ease;
+}
+header .buttons i:first-child:hover {
+  background: #704dff;
+}
+header .buttons i:last-child {
+  margin-left: 10px;
+  font-size: 1.25rem;
+  background: #6C757D;
+}
+header .buttons i:last-child:hover {
+  background: white;
+}
+.wrapper .preview-img {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+.preview-img .img {
+  max-height: 65vh;
+}
+.preview-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@media screen and (max-width: 764px) {
+  .lightbox .wrapper {
+    padding: 12px;
+    max-width: calc(100% - 26px);
+  }
+  .wrapper .preview-img {
+    margin-top: 15px;
+  }
+  header .buttons i:last-child {
+    margin-left: 7px;
+  }
+  header .photographer span, .search p {
+    font-size: 1.1rem;
+  }
+  .search h1 {
+    font-size: 1.8rem;
+  }
+  .search .search-box {
+    height: 50px;
+    margin: 30px 0;
+  }
+  .gallery .images {
+    max-width: 100%;
+    padding: 0 13px;
+    margin-top: 20px;
+  }
+  .images .details {
+    bottom: 0px;
+  }
+  .gallery .load-more {
+    padding: 10px 25px;
+    font-size: 1.05rem;
+  }
+}
+</style>
+<script>
+  const imageWrapper = document.querySelector(".images");
+
+const searchInput = document.querySelector(".search input");
+
+const loadMoreBtn = document.querySelector(".gallery .load-more");
+const lightbox = document.querySelector(".lightbox");
+const downloadImgBtn = lightbox.querySelector(".uil-import");
+const closeImgBtn = lightbox.querySelector(".close-icon");
+
+// API key, paginations, searchTerm variables
+const apiKey = "PFDye12sai2KnYoji5TpaCy5urYBvi8NyT8GPsx6AkeUpSbpuAAk3xP6";
+const perPage = 15;
+let currentPage = 1;
+let searchTerm = null;
+
+const downloadImg = (imgUrl) => {
+    // Converting received img to blob, creating its download link, & downloading it
+    fetch(imgUrl).then(res => res.blob()).then(blob => {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = new Date().getTime();
+        a.click();
+    }).catch(() => alert("Failed to download image!"));
+}
+
+const showLightbox = (name, img) => {
+    // Showing lightbox and setting img source, name and button attribute
+    lightbox.querySelector("img").src = img;
+    lightbox.querySelector("span").innerText = name;
+    downloadImgBtn.setAttribute("data-img", img);
+    lightbox.classList.add("show");
+    document.body.style.overflow = "hidden";
+}
+
+const hideLightbox = () => {
+    // Hiding lightbox on close icon click
+    lightbox.classList.remove("show");
+    document.body.style.overflow = "auto";
+}
+
+const generateHTML = (images) => {
+    // Making li of all fetched images and adding them to the existing image wrapper
+    imageWrapper.innerHTML += images.map(img =>
+        `<li class="card">
+            <img onclick="showLightbox('${img.photographer}', '${img.src.large2x}')" src="${img.src.large2x}" alt="img">
+            <div class="details">
+                <div class="photographer">
+                    <i class="uil uil-camera"></i>
+                    <span>${img.photographer}</span>
+                </div>
+                <button onclick="downloadImg('${img.src.large2x}');">
+                    <i class="uil uil-import"></i>
+                </button>
+            </div>
+        </li>`
+    ).join("");
+}
+
+const getImages = (apiURL) => {
+    // Fetching images by API call with authorization header
+    searchInput.blur();
+    loadMoreBtn.innerText = "Loading...";
+    loadMoreBtn.classList.add("disabled");
+    fetch(apiURL, {
+        headers: { Authorization: apiKey }
+    }).then(res => res.json()).then(data => {
+        generateHTML(data.photos);
+        loadMoreBtn.innerText = "Load More";
+        loadMoreBtn.classList.remove("disabled");
+    }).catch(() => alert("Failed to load images!"));
+}
+
+const loadMoreImages = () => {
+    currentPage++; // Increment currentPage by 1
+    // If searchTerm has some value then call API with search term else call default API
+    let apiUrl = `https://api.pexels.com/v1/curated?page=${currentPage}&per_page=${perPage}`;
+    apiUrl = searchTerm ? `https://api.pexels.com/v1/search?query=${searchTerm}&page=${currentPage}&per_page=${perPage}` : apiUrl;
+    getImages(apiUrl);
+}
+
+const loadSearchImages = (e) => {
+    // If the search input is empty, set the search term to null and return from here
+    if (e.target.value === "") return searchTerm = null;
+    // If pressed key is Enter, update the current page, search term & call the getImages
+    if (e.key === "Enter") {
+        currentPage = 1;
+        searchTerm = e.target.value;
+        imageWrapper.innerHTML = "";
+        getImages(`https://api.pexels.com/v1/search?query=${searchTerm}&page=1&per_page=${perPage}`);
+    }
+}
+
+getImages(`https://api.pexels.com/v1/curated?page=${currentPage}&per_page=${perPage}`);
+loadMoreBtn.addEventListener("click", loadMoreImages);
+searchInput.addEventListener("keyup", loadSearchImages);
+closeImgBtn.addEventListener("click", hideLightbox);
+downloadImgBtn.addEventListener("click", (e) => downloadImg(e.target.dataset.img));
+</script>
+  </body>
+</html>

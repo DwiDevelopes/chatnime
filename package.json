@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "apps creat by dwibakti nugroho",
   "dependencies": {
     "express": "^4.21.2",
     "socket.io": "^4.8.1"
