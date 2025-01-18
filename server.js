@@ -1,48 +1,55 @@
-// Mengambil nama room dari query string di URL
-const urlParams = new URLSearchParams(window.location.search);
-const roomName = urlParams.get('room');
-
-if (roomName) {
-    socket.emit('joinRoom', roomName);
-    document.getElementById('room-name').value = roomName;
-    renderMessages(roomName);
-}
-
+// Required modules
 const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const path = require('path');
+const cors = require('cors');
+
+// Create an instance of Express
 const app = express();
 
-// Routing untuk halaman chat
+// Enable CORS (Cross-Origin Resource Sharing)
+app.use(cors({
+  origin: 'https://your-ngrok-subdomain.ngrok.io'  // Add your Ngrok URL here
+}));
+
+// Routing for chat page
 app.get('/chat', (req, res) => {
     const room = req.query.room || 'default';
     res.sendFile(path.join(__dirname, 'index.html'), { root: __dirname });
 });
 
-// Menggunakan Socket.io
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+// Create HTTP server
+const server = http.createServer(app);
 
-// Menjalankan server
-http.listen(3000, () => {
+// Initialize Socket.io with the server
+const io = socketIo(server);
+
+// Socket.io connections and events
+io.on('connection', (socket) => {
+    console.log('User connected');
+
+    // When a user joins a room
+    socket.on('joinRoom', (roomName) => {
+        socket.join(roomName);
+        console.log(`User joined room: ${roomName}`);
+        
+        // Send a welcome message to the user
+        socket.emit('receiveMessage', { message: 'Welcome to ' + roomName });
+    });
+
+    // When a user sends a message to a room
+    socket.on('sendMessageToRoom', (msg) => {
+        io.to(msg.room).emit('receiveMessageFromRoom', msg);  // Send the message to the specific room
+    });
+
+    // Handle user disconnect
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
+
+// Start the server
+server.listen(3000, () => {
     console.log('Server running on http://localhost:3000');
 });
-
-// Routing untuk menerima pesan dari klien
-io.on('connection', (socket) => {
-    console.log('Client connected');
-
-    // Mendapatkan nama room dari klien
-    const room = socket.handshake.query.room || 'default';
-
-    // Mendapatkan pesan dari klien
-    socket.on('sendMessageToRoom', (msg) => {
-        console.log(`Message received from client: ${msg.message}`);
-        io.to(room).emit('receiveMessageFromRoom', msg);
-    });
-
-    // Mendapatkan room yang aktif dari klien
-    socket.on('joinRoom', (roomName) => {
-        console.log(`Room ${roomName} joined by client`);
-        socket.join(roomName);
-    });
-});
-

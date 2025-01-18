@@ -4,7 +4,6 @@ self.addEventListener('install', (event) => {
         return cache.addAll([
           '/',
           'index.html',
-          'LocalHost 3000.html',
           'app.js',
           'ico.png',
         ]);
